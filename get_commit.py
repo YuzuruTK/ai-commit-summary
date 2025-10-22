@@ -41,14 +41,17 @@ if not data.get("items"):
 
 print(f"Total commits found: {len(data.get('items', []))}")
 
-
 # --- AI Summary ---
+ai_model = "openai/gpt-oss-120b"
+content = f"Create a paragraph of the following GitHub commits made by the user {GITHUB_USERNAME} in the last {DAYS} days. this paragraph must be separated by projects names and breafly and directly explaining what has been done, or the most important information on them in these last {DAYS} days. Notice that this paragraph will be used as a Post for this User on LinkedIn. Notice too that this needs to be in a good format for LinkedIn. Here are the commits:\n" + "\n".join([f"{commit['repository']['full_name']} - {commit['commit']['message']}" for commit in data.get("items", [])])
+
+
 completion = client.chat.completions.create(
-    model="openai/gpt-oss-120b",
+    model=ai_model,
     messages=[
       {
         "role": "user",
-        "content": f"Create a concise summary of the following GitHub commits made by the user {GITHUB_USERNAME} in the last {DAYS} days. Highlight key contributions and any notable patterns or themes in the commit messages. Here are the commits:\n" + "\n".join([f"- {commit['commit']['message']}" for commit in data.get("items", [])])
+        "content": content
       },
     ],
     temperature=1,
