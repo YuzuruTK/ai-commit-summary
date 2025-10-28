@@ -43,8 +43,47 @@ print(f"Total commits found: {len(data.get('items', []))}")
 
 # --- AI Summary ---
 ai_model = "openai/gpt-oss-120b"
-content = f"Create a paragraph of the following GitHub commits made by the user {GITHUB_USERNAME} in the last {DAYS} days. this paragraph must be separated by projects names and breafly and directly explaining what has been done, or the most important information on them in these last {DAYS} days. Notice that this paragraph will be used as a Post for this User on LinkedIn. Notice too that this needs to be in a good format for LinkedIn. Here are the commits:\n" + "\n".join([f"{commit['repository']['full_name']} - {commit['commit']['message']}" for commit in data.get("items", [])])
+content = f"""create a LinkedIn post in Portuguese based on the following commit message made by the user {GITHUB_USERNAME} in the last 30 days. The post must be in a good format for LinkedIn, like this template and remember to NOT create information out of the commit messages:
 
+Nesta semana, foquei em [resumo do foco principal da semana — ex: otimização de performance, reestruturação da arquitetura, integração com API, etc.].
+
+💻 Avanços técnicos
+
+Implementação de [feature principal — ex: autenticação JWT, sistema de cache, pipeline de dados].
+
+Refatoração de [componente / módulo] para [motivo técnico — ex: melhorar legibilidade, reduzir acoplamento].
+
+Testes de [tecnologia / serviço] para [objetivo — ex: medir performance, validar compatibilidade].
+
+Correção de [bug / gargalo] que afetava [comportamento / desempenho].
+
+📚 Tecnologias e conceitos aplicados
+
+[Linguagem / framework / lib] para [função — ex: requisições assíncronas, renderização dinâmica, serialização].
+
+[Ferramenta / serviço cloud] para [ex: armazenamento, deploy, automação].
+
+[Padrão de projeto / princípio de engenharia] aplicado em [parte do sistema].
+
+🧠 Aprendizados da semana
+
+[Insight técnico — ex: a importância de configurar índices antes de otimizar queries].
+
+[Boa prática / conceito — ex: o impacto de desacoplar lógica de negócio dos endpoints].
+
+[Reflexão curta — ex: pequenas mudanças de arquitetura podem ter efeitos enormes em escalabilidade].
+
+📈 Próximos passos
+
+[Objetivo da próxima semana — ex: iniciar testes de carga, implementar CI/CD, integrar com API externa].
+
+(Opcional) 🤝 Conclusão / Engajamento leve
+Se alguém já trabalhou com [tecnologia / desafio similar], gostaria de saber como abordaram [problema específico].
+
+#softwaredevelopment #backend #cloud #datapipeline #progressupdate
+
+Here is the commit message:\n
+""" + "\n".join([f"{commit['repository']['full_name']} - {commit['commit']['message']}" for commit in data.get("items", [])])
 
 completion = client.chat.completions.create(
     model=ai_model,
